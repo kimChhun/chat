@@ -9,11 +9,13 @@ import chat.server.ChatServerIF;
 public class ChatClient extends UnicastRemoteObject implements ChatClientIF,Runnable {
 	private ChatServerIF chatServer;
 	private String name=null;
+	private Boolean busy= false;
 
 	protected ChatClient(String name, ChatServerIF chatServer) throws RemoteException {
 		this.name=name;
 		this.chatServer=chatServer;
-		chatServer.registerChatClient(this); // call server to registry
+		this.busy=false;
+		chatServer.connexionStart(this); // call server to registry
 	}
 
 	public void retriveMessage(String message) throws RemoteException {
@@ -22,6 +24,14 @@ public class ChatClient extends UnicastRemoteObject implements ChatClientIF,Runn
 	
 	public String getName() throws RemoteException {
 		return this.name;
+	}
+	
+	public Boolean getBusyFlag() throws RemoteException {
+		return this.busy;
+	}
+
+	public void setBusyFlag() throws RemoteException {
+		this.busy=true;
 	}
 	
 	public void run() {
@@ -37,5 +47,8 @@ public class ChatClient extends UnicastRemoteObject implements ChatClientIF,Runn
 		}
 		
 	}
+
+	
+	
 
 }
